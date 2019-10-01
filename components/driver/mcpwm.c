@@ -144,13 +144,13 @@ esp_err_t mcpwm_set_frequency(mcpwm_unit_t mcpwm_num, mcpwm_timer_t timer_num, u
     previous_period = MCPWM[mcpwm_num]->timer[timer_num].period.period;
     MCPWM[mcpwm_num]->timer[timer_num].period.prescale = TIMER_CLK_PRESCALE;
     MCPWM[mcpwm_num]->timer[timer_num].period.period = mcpwm_num_of_pulse;
-    MCPWM[mcpwm_num]->timer[timer_num].period.upmethod = 0;
+    MCPWM[mcpwm_num]->timer[timer_num].period.upmethod = 1;
     set_duty_a = (((MCPWM[mcpwm_num]->channel[timer_num].cmpr_value[0].cmpr_val) * mcpwm_num_of_pulse) / previous_period);
     set_duty_b = (((MCPWM[mcpwm_num]->channel[timer_num].cmpr_value[1].cmpr_val) * mcpwm_num_of_pulse) / previous_period);
     MCPWM[mcpwm_num]->channel[timer_num].cmpr_value[0].cmpr_val = set_duty_a;
     MCPWM[mcpwm_num]->channel[timer_num].cmpr_value[1].cmpr_val = set_duty_b;
-    MCPWM[mcpwm_num]->channel[timer_num].cmpr_cfg.a_upmethod = 0;
-    MCPWM[mcpwm_num]->channel[timer_num].cmpr_cfg.b_upmethod = 0;
+    MCPWM[mcpwm_num]->channel[timer_num].cmpr_cfg.a_upmethod = 1;
+    MCPWM[mcpwm_num]->channel[timer_num].cmpr_cfg.b_upmethod = 1;
     portEXIT_CRITICAL(&mcpwm_spinlock);
     return ESP_OK;
 }
@@ -164,8 +164,8 @@ esp_err_t mcpwm_set_duty(mcpwm_unit_t mcpwm_num, mcpwm_timer_t timer_num, mcpwm_
     portENTER_CRITICAL(&mcpwm_spinlock);
     set_duty = (MCPWM[mcpwm_num]->timer[timer_num].period.period) * (duty) / 100;
     MCPWM[mcpwm_num]->channel[timer_num].cmpr_value[op_num].cmpr_val = set_duty;
-    MCPWM[mcpwm_num]->channel[timer_num].cmpr_cfg.a_upmethod = BIT(0);
-    MCPWM[mcpwm_num]->channel[timer_num].cmpr_cfg.b_upmethod = BIT(0);
+    MCPWM[mcpwm_num]->channel[timer_num].cmpr_cfg.a_upmethod = 1;
+    MCPWM[mcpwm_num]->channel[timer_num].cmpr_cfg.b_upmethod = 1;
     portEXIT_CRITICAL(&mcpwm_spinlock);
     return ESP_OK;
 }
@@ -176,8 +176,8 @@ esp_err_t mcpwm_set_duty_in_us(mcpwm_unit_t mcpwm_num, mcpwm_timer_t timer_num, 
     MCPWM_CHECK(op_num < MCPWM_OPR_MAX, MCPWM_OP_ERROR, ESP_ERR_INVALID_ARG);
     portENTER_CRITICAL(&mcpwm_spinlock);
     MCPWM[mcpwm_num]->channel[timer_num].cmpr_value[op_num].cmpr_val = duty;
-    MCPWM[mcpwm_num]->channel[timer_num].cmpr_cfg.a_upmethod = BIT(0);
-    MCPWM[mcpwm_num]->channel[timer_num].cmpr_cfg.b_upmethod = BIT(0);
+    MCPWM[mcpwm_num]->channel[timer_num].cmpr_cfg.a_upmethod = 1;
+    MCPWM[mcpwm_num]->channel[timer_num].cmpr_cfg.b_upmethod = 1;
     portEXIT_CRITICAL(&mcpwm_spinlock);
     return ESP_OK;
 }
@@ -451,8 +451,8 @@ esp_err_t mcpwm_deadtime_enable(mcpwm_unit_t mcpwm_num, mcpwm_timer_t timer_num,
     MCPWM_CHECK(timer_num < MCPWM_TIMER_MAX, MCPWM_TIMER_ERROR, ESP_ERR_INVALID_ARG);
     MCPWM_CHECK(dt_mode < MCPWM_DEADTIME_TYPE_MAX, MCPWM_DB_ERROR, ESP_ERR_INVALID_ARG );
     portENTER_CRITICAL(&mcpwm_spinlock);
-    MCPWM[mcpwm_num]->channel[timer_num].db_cfg.fed_upmethod = BIT(0);
-    MCPWM[mcpwm_num]->channel[timer_num].db_cfg.red_upmethod = BIT(0);
+    MCPWM[mcpwm_num]->channel[timer_num].db_cfg.fed_upmethod = 1;
+    MCPWM[mcpwm_num]->channel[timer_num].db_cfg.red_upmethod = 1;
     MCPWM[mcpwm_num]->channel[timer_num].db_cfg.clk_sel = 0;
     MCPWM[mcpwm_num]->channel[timer_num].db_red_cfg.red = red;
     MCPWM[mcpwm_num]->channel[timer_num].db_fed_cfg.fed = fed;
